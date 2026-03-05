@@ -6,7 +6,15 @@
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "#database/*": ["src/database/*"],
+      "#repositories/*": ["src/repositories/*"],
+      "#services/*": ["src/services/*"],
+      "#types/*": ["src/types/*"],
+      "#utils/*": ["src/utils/*"]
+    }
   },
   "include": ["src", "test"]
 }

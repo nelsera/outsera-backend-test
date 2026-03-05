@@ -1,8 +1,8 @@
-import express from "express";
 import cors from "cors";
+import express from "express";
 
-import { registerRoutes } from "../routes/registerRoutes";
 import { errorMiddleware } from "../middlewares/errorMiddleware";
+import { registerRoutes } from "../routes/registerRoutes";
 
 export function createHttpServer() {
   const app = express();

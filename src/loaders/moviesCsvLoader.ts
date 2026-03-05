@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+
 import { parse } from "csv-parse/sync";
 
 type RawCsvMovieRecord = {

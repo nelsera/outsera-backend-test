@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-azuretools.vscode-docker",
+    "usernamehw.errorlens",
+    "christian-kohler.path-intellisense",
+    "wix.vscode-import-cost"
+  ]
+}

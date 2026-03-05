@@ -1,5 +1,5 @@
-import { splitProducers } from "../utils/producerParser";
-import type { ProducerInterval, ProducerIntervalsResponse } from "../types/producerIntervalTypes";
+import type { ProducerInterval, ProducerIntervalsResponse } from "#types/producerIntervalTypes";
+import { splitProducers } from "#utils/producerParser";
 
 type WinnerMovieRow = {
   year: number;

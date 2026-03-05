@@ -1,4 +1,5 @@
-import type { SqliteDatabase } from "../database/sqliteDatabase";
+import type { SqliteDatabase } from "#database/sqliteDatabase";
+
 import type { CsvMovieRow } from "../loaders/moviesCsvLoader";
 
 export type WinnerMovieRow = {

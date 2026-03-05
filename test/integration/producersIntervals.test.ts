@@ -1,8 +1,8 @@
-import request from "supertest";
 import type { Express } from "express";
+import request from "supertest";
 
-import { createHttpServer } from "../../src/app/createHttpServer";
 import { bootstrapApplication } from "../../src/app/bootstrapApplication";
+import { createHttpServer } from "../../src/app/createHttpServer";
 
 type ProducerInterval = {
   producer: string;
@@ -64,16 +64,19 @@ describe("GET /producers/intervals", () => {
 
   beforeAll(async () => {
     app = createHttpServer();
+
     await bootstrapApplication(app);
   });
 
   it("should return 200", async () => {
     const response = await request(app).get("/producers/intervals");
+
     expect(response.status).toBe(200);
   });
 
   it("should return JSON content type", async () => {
     const response = await request(app).get("/producers/intervals");
+
     expect(response.headers["content-type"]).toContain("application/json");
   });
 

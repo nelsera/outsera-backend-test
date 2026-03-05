@@ -1,7 +1,9 @@
 import type { Express } from "express";
-import { createInMemoryDatabase, initializeSchema } from "../database/sqliteDatabase";
+
+import { createInMemoryDatabase, initializeSchema } from "#database/sqliteDatabase";
+import { MovieRepository } from "#repositories/movieRepository";
+
 import { loadMoviesFromCsv } from "../loaders/moviesCsvLoader";
-import { MovieRepository } from "../repositories/movieRepository";
 import type { ApplicationContext } from "./applicationContext";
 
 declare module "express-serve-static-core" {

@@ -1,9 +1,10 @@
 import type { Request, Response } from "express";
 
-import { MovieRepository } from "../repositories/movieRepository";
-import { calculateProducerIntervals } from "../services/producerIntervalService";
+import { MovieRepository } from "#repositories/movieRepository";
+import { calculateProducerIntervals } from "#services/producerIntervalService";
+import type { AppContext } from "#types/appContext";
+
 import { createAppError } from "../errors/appError";
-import type { AppContext } from "../types/appContext";
 
 export function getProducerIntervals(request: Request, response: Response): void {
   const context = request.app.locals.context as AppContext | undefined;
