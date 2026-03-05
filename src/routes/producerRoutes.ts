@@ -1,9 +1,11 @@
-import { Express } from "express";
+import { Router } from "express";
 
-export function registerProducerRoutes(app: Express): void {
-  app.get("/producers/intervals", (_req, res) => {
-    res.status(501).json({
-      message: "Not implemented yet",
-    });
-  });
+import { getProducerIntervals } from "../controllers/producerController";
+
+export function producerRoutes() {
+  const router = Router();
+
+  router.get("/producers/intervals", getProducerIntervals);
+
+  return router;
 }

@@ -8,6 +8,9 @@ export function createHttpServer() {
   app.use(cors());
   app.use(express.json());
 
+  /*
+   * Todas as rotas da aplicação são registradas aqui.
+   */
   registerRoutes(app);
 
   return app;
