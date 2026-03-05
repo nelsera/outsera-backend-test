@@ -1,5 +1,20 @@
-import { Express } from "express";
+import type { Express } from "express";
+import { createInMemoryDatabase, initializeSchema } from "../database/sqliteDatabase";
+import type { ApplicationContext } from "./applicationContext";
 
-export async function bootstrapApplication(_app: Express): Promise<void> {
-  console.log("[bootstrap] starting application bootstrap");
+declare module "express-serve-static-core" {
+  interface Locals {
+    context: ApplicationContext;
+  }
+}
+
+export async function bootstrapApplication(app: Express): Promise<void> {
+  console.log("[bootstrap] creating in-memory database");
+
+  const database = createInMemoryDatabase();
+  initializeSchema(database);
+
+  app.locals.context = { database };
+
+  console.log("[bootstrap] database ready");
 }
