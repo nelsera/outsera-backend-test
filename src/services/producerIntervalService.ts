@@ -73,9 +73,7 @@ function buildIntervalsFromWins(producerWinsIndex: Map<string, Set<number>>): Pr
   const intervals: ProducerInterval[] = [];
 
   for (const [producerName, yearsSet] of producerWinsIndex.entries()) {
-    const sortedYears = Array.from(yearsSet).sort((leftYear, rightYear) => {
-      return leftYear - rightYear;
-    });
+    const sortedYears = Array.from(yearsSet).sort((leftYear, rightYear) => leftYear - rightYear);
 
     if (sortedYears.length < 2) {
       continue;
@@ -124,15 +122,11 @@ function pickMinAndMaxIntervals(intervals: ProducerInterval[]): ProducerInterval
   }
 
   const minIntervals = intervals
-    .filter((intervalItem) => {
-      return intervalItem.interval === minIntervalValue;
-    })
+    .filter((intervalItem) => intervalItem.interval === minIntervalValue)
     .sort(sortIntervalsForStableOutput);
 
   const maxIntervals = intervals
-    .filter((intervalItem) => {
-      return intervalItem.interval === maxIntervalValue;
-    })
+    .filter((intervalItem) => intervalItem.interval === maxIntervalValue)
     .sort(sortIntervalsForStableOutput);
 
   logger.debug(

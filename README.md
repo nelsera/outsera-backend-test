@@ -1,46 +1,57 @@
-# Producers Intervals API
+# API de Intervalos de Produtores
 
-REST API that calculates the **minimum and maximum interval between consecutive wins for producers** based on the Golden Raspberry Awards dataset.
+API REST que calcula o **intervalo mínimo e máximo entre vitórias
+consecutivas de produtores** com base no dataset do **Golden Raspberry
+Awards**.
 
-The application loads the CSV dataset into an **in-memory SQLite database** and exposes an endpoint to query the calculated intervals.
+A aplicação carrega o dataset CSV em um **banco SQLite em memória** e
+expõe um endpoint para consultar os intervalos calculados.
 
 ---
 
-# Tech Stack
+# Stack Tecnológica
 
 - Node.js
 - TypeScript
 - Express
-- SQLite (in-memory)
-- Jest (integration tests)
-- Pino (structured logging)
+- SQLite (em memória)
+- Jest (testes de integração)
+- Pino (logs estruturados)
 - Docker
 
 ---
 
-# Running the Application
+# Executando a Aplicação
 
-## With Docker (recommended)
+## Com Docker
+
+### Ambiente de desenvolvimento
 
 ```bash
-docker compose up --build
+docker compose --profile dev up --build
 ```
 
-The API will be available at:
+### Ambiente de produção
+
+```bash
+docker compose --profile prod up --build
+```
+
+A API ficará disponível em:
 
 http://localhost:3000
 
 ---
 
-## Running locally
+## Executando localmente
 
-Install dependencies:
+Instale as dependências:
 
 ```bash
 npm install
 ```
 
-Start the application:
+Inicie a aplicação:
 
 ```bash
 npm run dev
@@ -48,13 +59,13 @@ npm run dev
 
 ---
 
-# API Endpoint
+# Endpoint da API
 
-### Get producer intervals
+## Obter intervalos entre vitórias de produtores
 
-GET /producers/intervals
+    GET /producers/intervals
 
-Example response (default dataset):
+### Exemplo de resposta
 
 ```json
 {
@@ -79,71 +90,79 @@ Example response (default dataset):
 
 ---
 
-# Tests
+# Testes
 
-Run all tests:
+Executar todos os testes:
 
 ```bash
 npm test
 ```
 
-The project includes **integration tests** that validate:
+O projeto possui **testes de integração** que validam:
 
-- API response structure
-- deterministic results
-- error handling
-- database initialization
-
----
-
-# Project Structure
-
-```
-src/
-  app/
-  controllers/
-  services/
-  repositories/
-  database/
-  utils/
-
-test/
-  integration/
-```
-
-The architecture separates:
-
-- **Controllers** -> HTTP layer
-- **Services** -> business logic
-- **Repositories** -> data access
-- **Database** -> SQLite initialization
+- Estrutura da resposta da API
+- Resultados determinísticos
+- Tratamento de erros
+- Inicialização correta do banco de dados
 
 ---
 
-# Logging
+# Estrutura do Projeto
 
-The application uses **Pino** for structured logging.
+    src/
+      app/
+      controllers/
+      services/
+      repositories/
+      database/
+      utils/
 
-Logs include:
+    test/
+      integration/
 
-- HTTP method
-- route
-- status code
-- response time
-- client IP
+A arquitetura separa as responsabilidades em camadas:
 
-Pretty logs are enabled in development and disabled during tests.
+- **Controllers** -> Camada HTTP
+- **Services** -> Regras de negócio
+- **Repositories** -> Acesso a dados
+- **Database** -> Inicialização do SQLite
+
+---
+
+# Logs
+
+A aplicação utiliza **Pino** para logs estruturados.
+
+Os logs incluem:
+
+- Método HTTP
+- Rota acessada
+- Código de status
+- Tempo de resposta
+- IP do cliente
+
+No ambiente de desenvolvimento os logs são exibidos em formato
+**pretty**. Durante os testes os logs são simplificados para evitar
+ruído.
 
 ---
 
 # Dataset
 
-The application loads the provided **CSV dataset** at startup and stores it in an **in-memory SQLite database**.
+A aplicação carrega o **dataset CSV fornecido** durante a inicialização
+e armazena os dados em um **SQLite em memória**.
 
-This approach keeps the API fast and deterministic for testing purposes.
+Essa abordagem torna a API:
+
+- rápida
+- determinística
+- ideal para testes automatizados
 
 ---
 
-# Author
+# Observações
 
-Nelson Silva
+- O banco é recriado a cada inicialização da aplicação.
+- O dataset é carregado automaticamente no bootstrap da aplicação.
+- A API foi projetada para ser simples de executar em ambiente local
+  ou via Docker.

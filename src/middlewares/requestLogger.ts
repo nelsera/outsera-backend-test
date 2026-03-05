@@ -4,10 +4,6 @@ import pinoHttp from "pino-http";
 
 import { logger } from "#utils/logger";
 
-/**
- * Tipos mínimos que o pino-http usa internamente.
- * No Express, o req/res são "mais ricos", mas isso é suficiente para tipagem aqui.
- */
 type HttpRequest = IncomingMessage & {
   method?: string;
   url?: string;
@@ -22,9 +18,6 @@ type HttpResponse = ServerResponse<IncomingMessage> & {
 
 /**
  * Extrai o endereço IP do cliente.
- *
- * Caso a aplicação esteja atrás de um proxy ou load balancer,
- * o IP original normalmente vem no header `x-forwarded-for`.
  */
 function getClientIp(req: unknown): string | undefined {
   if (!req || typeof req !== "object") {
@@ -75,11 +68,6 @@ function formatResponseTime(responseTime: unknown): string | undefined {
 
 /**
  * Middleware responsável por registrar logs de requisições HTTP.
- *
- * Utiliza o pino-http para interceptar as requisições e registrar
- * automaticamente informações relevantes.
- *
- * O nível de log é determinado pelo status da resposta.
  */
 export const requestLogger = pinoHttp({
   logger,
@@ -101,9 +89,6 @@ export const requestLogger = pinoHttp({
 
   /**
    * Mensagem exibida quando a requisição termina com sucesso.
-   *
-   * OBS: o pino-http passa `responseTime` como 3º parâmetro em runtime,
-   * mas o type nem sempre declara. Por isso o cast aqui.
    */
   customSuccessMessage: ((req: HttpRequest, res: HttpResponse, responseTime: number) => {
     const ip = getClientIp(req);
@@ -118,9 +103,6 @@ export const requestLogger = pinoHttp({
 
   /**
    * Mensagem exibida quando ocorre erro durante a requisição.
-   *
-   * OBS: em runtime, `responseTime` vem como 4º parâmetro.
-   * Mantemos o cast para compatibilizar com os types.
    */
   customErrorMessage: ((req: HttpRequest, res: HttpResponse, err: Error, responseTime: number) => {
     const ip = getClientIp(req);
@@ -139,7 +121,6 @@ export const requestLogger = pinoHttp({
 
   /**
    * Serializadores utilizados para reduzir o volume de dados registrados no log.
-   * Apenas campos relevantes da requisição e resposta são mantidos.
    */
   serializers: {
     req(req: HttpRequest) {

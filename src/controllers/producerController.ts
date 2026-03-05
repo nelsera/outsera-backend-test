@@ -10,7 +10,7 @@ import { createAppError } from "../errors/appError";
 export function getProducerIntervals(request: Request, response: Response): void {
   const context = request.app.locals.context as AppContext | undefined;
 
-  if (!context || !context.database) {
+  if (!context?.database) {
     logger.error("[producers] database not initialized");
 
     throw createAppError("Database not initialized", "DATABASE_NOT_READY", 503);
@@ -20,13 +20,7 @@ export function getProducerIntervals(request: Request, response: Response): void
 
   const result = calculateProducerIntervals(movieRepository);
 
-  logger.debug(
-    {
-      minCount: result.min.length,
-      maxCount: result.max.length,
-    },
-    "[producers] intervals calculated",
-  );
+  logger.info(result, "[producers] intervals calculated");
 
   response.status(200).json(result);
 }
