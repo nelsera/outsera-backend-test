@@ -62,6 +62,7 @@ function buildIntervalsFromWins(producerWinsIndex: Map<string, Set<number>>): Pr
 
     for (let currentIndex = 1; currentIndex < sortedYears.length; currentIndex++) {
       const previousWinYear = sortedYears[currentIndex - 1];
+
       const followingWinYear = sortedYears[currentIndex];
 
       intervals.push({

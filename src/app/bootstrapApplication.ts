@@ -16,6 +16,8 @@ export async function bootstrapApplication(app: Express): Promise<void> {
   const database = createInMemoryDatabase();
   initializeSchema(database);
 
+  app.locals.context = { database };
+
   const movieRepository = new MovieRepository(database);
 
   console.log("[bootstrap] loading movies from CSV");
@@ -23,8 +25,6 @@ export async function bootstrapApplication(app: Express): Promise<void> {
 
   movieRepository.saveMany(movies);
   console.log(`[bootstrap] movies loaded: ${movieRepository.countAll()}`);
-
-  app.locals.context = { database };
 
   console.log("[bootstrap] database ready");
 }
