@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
+
 import { registerRoutes } from "../routes/registerRoutes";
+import { errorMiddleware } from "../middlewares/errorMiddleware";
 
 export function createHttpServer() {
   const app = express();
@@ -8,10 +10,9 @@ export function createHttpServer() {
   app.use(cors());
   app.use(express.json());
 
-  /*
-   * Todas as rotas da aplicação são registradas aqui.
-   */
   registerRoutes(app);
+
+  app.use(errorMiddleware);
 
   return app;
 }
