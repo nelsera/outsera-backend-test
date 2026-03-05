@@ -35,7 +35,7 @@ function normalizeCsvRecord(record: RawCsvMovieRecord): CsvMovieRow {
   const year = Number(record.year);
 
   return {
-    year,
+    year: Number.isNaN(year) ? 0 : year,
     title: record.title.trim(),
     studios: record.studios.trim(),
     producers: record.producers.trim(),

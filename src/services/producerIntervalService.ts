@@ -1,4 +1,5 @@
 import type { ProducerInterval, ProducerIntervalsResponse } from "#types/producerIntervalTypes";
+import { logger } from "#utils/logger";
 import { splitProducers } from "#utils/producerParser";
 
 type WinnerMovieRow = {
@@ -13,18 +14,39 @@ type WinnerMoviesProvider = {
 export function calculateProducerIntervals(
   movieRepository: WinnerMoviesProvider,
 ): ProducerIntervalsResponse {
+  const startedAt = Date.now();
+
   const winnerMovies = movieRepository.findWinnerMovies();
+
+  logger.debug({ winnerMovies: winnerMovies.length }, "[producer-intervals] loaded winner movies");
 
   const producerWinsIndex = buildProducerWinsIndex(winnerMovies);
 
+  logger.debug({ producers: producerWinsIndex.size }, "[producer-intervals] built wins index");
+
   const calculatedIntervals = buildIntervalsFromWins(producerWinsIndex);
 
-  return pickMinAndMaxIntervals(calculatedIntervals);
+  logger.debug(
+    { intervals: calculatedIntervals.length },
+    "[producer-intervals] calculated intervals",
+  );
+
+  const result = pickMinAndMaxIntervals(calculatedIntervals);
+
+  logger.info(
+    {
+      ms: Date.now() - startedAt,
+      minCount: result.min.length,
+      maxCount: result.max.length,
+    },
+    "[producer-intervals] done",
+  );
+
+  return result;
 }
 
 /*
  * Cria um índice onde cada produtor possui a lista de anos em que venceu.
- * Set evita duplicidade caso o dataset tenha registros repetidos.
  */
 function buildProducerWinsIndex(winnerMovies: WinnerMovieRow[]): Map<string, Set<number>> {
   const producerWinsIndex = new Map<string, Set<number>>();
@@ -46,7 +68,6 @@ function buildProducerWinsIndex(winnerMovies: WinnerMovieRow[]): Map<string, Set
 
 /*
  * Calcula o intervalo entre vitórias consecutivas de cada produtor.
- * A lista de anos é ordenada para garantir consistência, mesmo se o CSV vier fora de ordem.
  */
 function buildIntervalsFromWins(producerWinsIndex: Map<string, Set<number>>): ProducerInterval[] {
   const intervals: ProducerInterval[] = [];
@@ -79,15 +100,18 @@ function buildIntervalsFromWins(producerWinsIndex: Map<string, Set<number>>): Pr
 
 /*
  * Descobre qual é o menor e o maior intervalo entre vitórias.
- * Pode existir mais de um produtor com o mesmo intervalo, por isso retornamos listas.
  */
 function pickMinAndMaxIntervals(intervals: ProducerInterval[]): ProducerIntervalsResponse {
   if (intervals.length === 0) {
+    logger.warn("[producer-intervals] no intervals found");
+
     return { min: [], max: [] };
   }
 
-  let minIntervalValue = intervals[0].interval;
-  let maxIntervalValue = intervals[0].interval;
+  const [firstInterval] = intervals;
+
+  let minIntervalValue = firstInterval.interval;
+  let maxIntervalValue = firstInterval.interval;
 
   for (const intervalItem of intervals) {
     if (intervalItem.interval < minIntervalValue) {
@@ -111,6 +135,16 @@ function pickMinAndMaxIntervals(intervals: ProducerInterval[]): ProducerInterval
     })
     .sort(sortIntervalsForStableOutput);
 
+  logger.debug(
+    {
+      minInterval: minIntervalValue,
+      maxInterval: maxIntervalValue,
+      minCount: minIntervals.length,
+      maxCount: maxIntervals.length,
+    },
+    "[producer-intervals] picked min/max",
+  );
+
   return {
     min: minIntervals,
     max: maxIntervals,
@@ -119,7 +153,6 @@ function pickMinAndMaxIntervals(intervals: ProducerInterval[]): ProducerInterval
 
 /*
  * Ordenação aplicada para garantir que a resposta sempre saia na mesma ordem.
- * Isso evita variações dependendo da ordem dos dados no dataset.
  */
 function sortIntervalsForStableOutput(
   leftInterval: ProducerInterval,

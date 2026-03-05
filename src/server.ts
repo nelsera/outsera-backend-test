@@ -1,3 +1,5 @@
+import { logger } from "#utils/logger";
+
 import { bootstrapApplication } from "./app/bootstrapApplication";
 import { createHttpServer } from "./app/createHttpServer";
 
@@ -8,15 +10,17 @@ async function main(): Promise<void> {
 
   const app = createHttpServer();
 
+  logger.info("[server] starting application");
+
   await bootstrapApplication(app);
 
-  app.listen(port, () => {
-    console.log(`[server] running on http://${host}:${port}`);
+  app.listen(port, host, () => {
+    logger.info({ host, port }, "[server] http server running");
   });
 }
 
 main().catch((error) => {
-  console.error("[server] fatal error:", error);
+  logger.error({ error }, "[server] fatal error during startup");
 
   process.exit(1);
 });

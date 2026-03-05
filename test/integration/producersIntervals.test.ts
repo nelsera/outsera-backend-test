@@ -178,7 +178,7 @@ describe("GET /producers/intervals", () => {
 
     expect(response.body).toEqual({
       error: "DATABASE_NOT_READY",
-      message: "Banco de dados não inicializado",
+      message: "Database not initialized",
     });
   });
 

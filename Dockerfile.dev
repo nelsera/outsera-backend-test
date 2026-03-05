@@ -2,11 +2,9 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# instala deps uma vez (cache do docker ajuda muito)
 COPY package*.json ./
 RUN npm ci
 
-# no dev vamos montar o código via volume, então não precisa COPY .
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
