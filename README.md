@@ -4,8 +4,25 @@ API REST que calcula o **intervalo mínimo e máximo entre vitórias
 consecutivas de produtores** com base no dataset do **Golden Raspberry
 Awards**.
 
-A aplicação carrega o dataset CSV em um **banco SQLite em memória** e
-expõe um endpoint para consultar os intervalos calculados.
+A aplicação carrega o dataset CSV em um **banco SQLite em memória**,
+realiza o **processamento dos intervalos durante o bootstrap da
+aplicação** e expõe um endpoint para consultar o resultado.
+
+---
+
+# Vídeo de Demonstração
+
+Gravei um vídeo de aproximadamente **20 minutos** explicando:
+
+- arquitetura da aplicação
+- organização do código
+- fluxo de processamento
+- execução da API
+- execução dos testes
+
+Vídeo:
+
+https://drive.google.com/file/d/15xbhEzMRU3dk81k7SvUXtZBaAIdUyh6C/view
 
 ---
 
@@ -18,6 +35,55 @@ expõe um endpoint para consultar os intervalos calculados.
 - Jest (testes de integração)
 - Pino (logs estruturados)
 - Docker
+
+---
+
+# Arquitetura da Aplicação
+
+A aplicação segue uma separação simples de responsabilidades:
+
+- **Controllers** -> Camada HTTP
+- **Services** -> Regras de negócio
+- **Repositories** -> Acesso a dados
+- **Database** -> Inicialização do banco SQLite
+- **Utils** -> Funções auxiliares
+
+Estrutura de diretórios:
+
+    src/
+      app/
+      controllers/
+      services/
+      repositories/
+      database/
+      utils/
+
+    test/
+      integration/
+
+Essa estrutura permite manter:
+
+- código organizado
+- responsabilidades bem separadas
+- facilidade para testes
+
+---
+
+# Fluxo de Inicialização
+
+Durante o **bootstrap da aplicação** ocorre o seguinte fluxo:
+
+1.  Criação do banco **SQLite em memória**
+2.  Carregamento do **dataset CSV**
+3.  Normalização dos dados
+4.  Persistência dos filmes vencedores no banco
+5.  Processamento dos intervalos de produtores
+6.  Disponibilização do endpoint HTTP
+
+O cálculo dos intervalos é realizado **apenas uma vez durante a
+inicialização da aplicação**.
+Isso torna a API mais eficiente, pois evita recalcular os dados a cada
+requisição.
 
 ---
 
@@ -39,7 +105,7 @@ docker compose --profile prod up --build
 
 A API ficará disponível em:
 
-http://localhost:3000
+    http://localhost:3000
 
 ---
 
@@ -56,6 +122,10 @@ Inicie a aplicação:
 ```bash
 npm run dev
 ```
+
+A API ficará disponível em:
+
+    http://localhost:3000
 
 ---
 
@@ -101,68 +171,7 @@ npm test
 O projeto possui **testes de integração** que validam:
 
 - Estrutura da resposta da API
-- Resultados determinísticos
 - Tratamento de erros
 - Inicialização correta do banco de dados
 
----
-
-# Estrutura do Projeto
-
-    src/
-      app/
-      controllers/
-      services/
-      repositories/
-      database/
-      utils/
-
-    test/
-      integration/
-
-A arquitetura separa as responsabilidades em camadas:
-
-- **Controllers** -> Camada HTTP
-- **Services** -> Regras de negócio
-- **Repositories** -> Acesso a dados
-- **Database** -> Inicialização do SQLite
-
----
-
-# Logs
-
-A aplicação utiliza **Pino** para logs estruturados.
-
-Os logs incluem:
-
-- Método HTTP
-- Rota acessada
-- Código de status
-- Tempo de resposta
-- IP do cliente
-
-No ambiente de desenvolvimento os logs são exibidos em formato
-**pretty**. Durante os testes os logs são simplificados para evitar
-ruído.
-
----
-
-# Dataset
-
-A aplicação carrega o **dataset CSV fornecido** durante a inicialização
-e armazena os dados em um **SQLite em memória**.
-
-Essa abordagem torna a API:
-
-- rápida
-- determinística
-- ideal para testes automatizados
-
----
-
-# Observações
-
-- O banco é recriado a cada inicialização da aplicação.
-- O dataset é carregado automaticamente no bootstrap da aplicação.
-- A API foi projetada para ser simples de executar em ambiente local
-  ou via Docker.
+Os testes utilizam **Jest** como o teste runner e supertest para ajudar nas requisições http.
